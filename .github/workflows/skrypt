@@ -1,0 +1,17 @@
+# Przechodzi przez wszystkie pliki w katalogu i podkatalogach
+Get-ChildItem -Recurse | 
+# Dla każdego pliku
+ForEach-Object {
+    # Czytaj zawartość pliku
+    Get-Content $_ |
+    # Dla każdego wiersza w pliku
+    ForEach-Object {
+        # Wyszukaj wiersz zawierający adres IP
+        if ($_ -match "\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b") {
+            # Wypisz adres IP
+            Write-Output $Matches[0]
+        }
+    }
+} | 
+# Usuń duplikaty
+Sort-Object -Unique
