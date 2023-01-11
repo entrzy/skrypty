@@ -1,0 +1,8 @@
+$url = "https://example.com"
+$request = [System.Net.WebRequest]::Create($url)
+$request.GetResponse()
+$response = $request.GetResponse()
+$ssl = $response.GetResponseStream()
+$ssl_certificate = $ssl.GetType().InvokeMember("Certificate", "GetProperty", $null, $ssl, $null)
+$expiry_date = $ssl_certificate.GetExpirationDateString()
+$expiry_date
