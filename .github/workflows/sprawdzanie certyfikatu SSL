@@ -5,7 +5,7 @@ $request.Timeout = 15000
 
 try {
     $response = $request.GetResponse()
-    $cert = $response.GetResponseStream().GetContext().Connection.RemoteCertificate
+    $cert = $response.ServerCertificate
     $issuer = $cert.Issuer
     $subject = $cert.Subject
     $expirationDate = $cert.GetExpirationDateString()
@@ -15,6 +15,7 @@ try {
     Write-Host "Issuer: $issuer"
     Write-Host "Subject: $subject"
     Write-Host "Expiration Date: $expirationDate"
+
 } catch [System.Net.WebException] {
     Write-Host "Error: $($_.Exception.Message)"
     Write-Host "Certificate chain details:"
