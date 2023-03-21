@@ -1,0 +1,27 @@
+$uri = "https://example.com"
+$request = [System.Net.HttpWebRequest]::Create($uri)
+$request.AllowAutoRedirect = $true
+$request.Timeout = 15000
+
+try {
+    $response = $request.GetResponse()
+    $cert = $response.GetResponseStream().GetContext().Connection.RemoteCertificate
+    $issuer = $cert.Issuer
+    $subject = $cert.Subject
+    $expirationDate = $cert.GetExpirationDateString()
+    $isValid = $cert.Verify()
+
+    Write-Host "Certificate is valid: $isValid"
+    Write-Host "Issuer: $issuer"
+    Write-Host "Subject: $subject"
+    Write-Host "Expiration Date: $expirationDate"
+} catch [System.Net.WebException] {
+    Write-Host "Error: $($_.Exception.Message)"
+    Write-Host "Certificate chain details:"
+    $certChain = $_.Exception.InnerException.InnerException
+    $certChain.ChainElements | ForEach-Object {
+        Write-Host "Subject: $($_.Certificate.Subject)"
+        Write-Host "Issuer: $($_.Certificate.Issuer)"
+        Write-Host "Status: $($_.ChainElementStatus.Status)"
+    }
+}
