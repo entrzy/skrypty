@@ -1,0 +1,22 @@
+$sourceFile = "ścieżka_do_pliku\plik.txt"
+$destinationPath = "\\nazwa_serwera\folder_docelowy"
+
+$servers = @(
+    "serwer1",
+    "serwer2",
+    "serwer3",
+    "serwer4",
+    "serwer5",
+    "serwer6",
+    "serwer7",
+    "serwer8",
+    "serwer9",m
+    "serwer9",m
+    "serwer10"
+)
+
+foreach ($server in $servers) {
+    $destination = "\\$server\$destinationPath"
+    Write-Host "Kopiowanie pliku do: $destination"
+    Copy-Item -Path $sourceFile -Destination $destination
+}
