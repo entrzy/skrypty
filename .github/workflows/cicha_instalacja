@@ -1,0 +1,32 @@
+# Ścieżka do pliku MSI, który chcesz zainstalować
+$msiPath = "Ścieżka\Do\Pliku.msi"
+ 
+# Parametry instalacji
+$installArgs = "/qn"  # /qn oznacza tryb cichy (bez interakcji)
+ 
+# Pętla po serwerach
+foreach ($server in $servers) {
+    Write-Host "Instalowanie MSI na serwerze: $server"
+   
+    # Tworzenie obiektu zdalnej sesji
+    $session = New-PSSession -ComputerName $server
+ 
+    # Kopiowanie pliku MSI na zdalny serwer
+    Copy-Item -Path $msiPath -Destination "\\$server\C$\Temp\Instalator.msi" -ToSession $session
+ 
+    # Wykonanie instalacji w trybie cichym zdalnie
+    Invoke-Command -Session $session -ScriptBlock {
+        Start-Process -FilePath "msiexec.exe" -ArgumentList "/i C:\Temp\Instalator.msi $using:installArgs" -Wait
+    }
+ 
+    # Usunięcie pliku MSI ze zdalnego serwera
+    Invoke-Command -Session $session -ScriptBlock {
+        Remove-Item -Path "C:\Temp\Instalator.msi" -Force -Recurse -ErrorAction SilentlyContinue
+    }
+ 
+    # Zamknięcie zdalnej sesji
+    Remove-PSSession -Session $session
+ 
+    Write-Host "Instalacja MSI na serwerze $server zakończona"
+    Write-Host ""
+}
