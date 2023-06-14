@@ -1,0 +1,14 @@
+SELECT
+    s.session_id AS SessionID,
+    s.login_name AS UserName,
+    s.status AS Status,
+    r.start_time AS StartTime,
+    DATEDIFF(MINUTE, r.start_time, GETDATE()) AS DurationInMinutes
+FROM
+    sys.dm_exec_sessions AS s
+INNER JOIN
+    sys.dm_exec_requests AS r ON s.session_id = r.session_id
+WHERE
+    s.status = 'running'
+ORDER BY
+    StartTime DESC;
