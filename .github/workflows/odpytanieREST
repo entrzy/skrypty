@@ -1,0 +1,24 @@
+param(
+    [string]$Url
+)
+
+function Get-DataFromUrl {
+    param(
+        [string]$Url
+    )
+    
+    try {
+        # Wywołanie usługi REST przy użyciu metody GET
+        $response = Invoke-RestMethod -Uri $Url -Method Get
+        
+        # Wyświetlanie odpowiedzi
+        Write-Output "Odpowiedź z serwera: $($response | ConvertTo-Json)"
+    }
+    catch {
+        # Obsługa błędów i wyświetlanie wiadomości o błędzie
+        Write-Error "Błąd: $_"
+    }
+}
+
+# Wywołanie funkcji z przekazanym parametrem
+Get-DataFromUrl -Url $Url
