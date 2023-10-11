@@ -1,15 +1,20 @@
 param(
-    [string]$Url
+    [string]$Url,
+    [string]$CertPath
 )
 
 function Get-DataFromUrl {
     param(
-        [string]$Url
+        [string]$Url,
+        [string]$CertPath
     )
     
     try {
-        # Wywołanie usługi REST przy użyciu metody GET
-        $response = Invoke-RestMethod -Uri $Url -Method Get
+        # Załadowanie certyfikatu
+        $cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2 -ArgumentList $CertPath
+
+        # Wywołanie usługi REST przy użyciu metody GET i certyfikatu
+        $response = Invoke-RestMethod -Uri $Url -Method Get -Certificate $cert
         
         # Wyświetlanie odpowiedzi
         Write-Output "Odpowiedź z serwera: $($response | ConvertTo-Json)"
@@ -20,5 +25,5 @@ function Get-DataFromUrl {
     }
 }
 
-# Wywołanie funkcji z przekazanym parametrem
-Get-DataFromUrl -Url $Url
+# Wywołanie funkcji z przekazanymi parametrami
+Get-DataFromUrl -Url $Url -CertPath $CertPath
