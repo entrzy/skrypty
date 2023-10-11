@@ -1,25 +1,30 @@
 param(
     [string]$Url,
-    [string]$CertPath
+    [string]$CertPath,
+    [string]$CertPassword
 )
 
 function Get-DataFromUrl {
     param(
         [string]$Url,
-        [string]$CertPath
+        [string]$CertPath,
+        [string]$CertPassword
     )
-
+    
     try {
-        # Wczytaj certyfikat
+        # Wczytanie certyfikatu z pliku
         $cert = Get-PfxCertificate -FilePath $CertPath
 
-        # Ustaw protokół TLS na 1.2 lub inny odpowiedni
-        [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-
-        # Wywołaj usługę REST z użyciem certyfikatu
+        # Utworzenie obiektu SecureString dla hasła certyfikatu
+        $securePassword = ConvertTo-SecureString -String $CertPassword -AsPlainText -Force
+        
+        # Importowanie certyfikatu do magazynu 'CurrentUser' na komputerze lokalnym
+        Import-PfxCertificate -FilePath $CertPath -CertStoreLocation Cert:\CurrentUser\My -Password $securePassword | Out-Null
+        
+        # Wywołanie usługi REST przy użyciu metody GET z uwzględnieniem certyfikatu
         $response = Invoke-RestMethod -Uri $Url -Method Get -Certificate $cert
-
-        # Wyświetl odpowiedź
+        
+        # Wyświetlanie odpowiedzi
         Write-Output "Odpowiedź z serwera: $($response | ConvertTo-Json)"
     }
     catch {
@@ -28,30 +33,5 @@ function Get-DataFromUrl {
     }
 }
 
-# Wywołaj funkcję z przekazanymi parametrami
-Get-DataFromUrl -Url $Url -CertPath $CertPath
-
-
-
-
-
-
-pem
-
-
-function Get-CertificateFromPem {
-    param(
-        [string]$PemPath
-    )
-
-    $certContent = Get-Content -Path $PemPath -Raw
-    $certContent = $certContent -replace '-{5}(BEGIN|END) CERTIFICATE-{5}', ''
-    $certContent = [System.Convert]::FromBase64String($certContent)
-    $cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2 -ArgumentList @($certContent)
-
-    return $cert
-}
-
-
-
-
+# Wywołanie funkcji z przekazanymi parametrami
+Get-DataFromUrl -Url $Url -CertPath $CertPath -CertPassword $CertPassword
