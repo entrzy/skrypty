@@ -35,3 +35,42 @@ function Get-DataFromUrl {
 
 # Wywołanie funkcji z przekazanymi parametrami
 Get-DataFromUrl -Url $Url -CertPath $CertPath -CertPassword $CertPassword
+
+
+
+
+
+=====================================================================================
+
+
+    [string]$Url,
+    [string]$CertPath
+)
+
+function Get-DataFromUrl {
+    param(
+        [string]$Url,
+        [string]$CertPath
+    )
+    
+    try {
+        # Wczytanie certyfikatu z pliku
+        $cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2 -ArgumentList $CertPath
+
+        # Ustawienie protokołu TLS na 1.2
+        [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
+        # Wywołanie usługi REST przy użyciu metody GET
+        $response = Invoke-RestMethod -Uri $Url -Method Get -Certificate $cert
+        
+        # Wyświetlanie odpowiedzi
+        Write-Output "Odpowiedź z serwera: $($response | ConvertTo-Json)"
+    }
+    catch {
+        # Obsługa błędów i wyświetlanie wiadomości o błędzie
+        Write-Error "Błąd: $_"
+    }
+}
+
+# Wywołanie funkcji z przekazanymi parametrami
+Get-DataFromUrl -Url $Url -CertPath $CertPath
