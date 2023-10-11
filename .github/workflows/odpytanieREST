@@ -8,15 +8,18 @@ function Get-DataFromUrl {
         [string]$Url,
         [string]$CertPath
     )
-    
-    try {
-        # Załadowanie certyfikatu
-        $cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2 -ArgumentList $CertPath
 
-        # Wywołanie usługi REST przy użyciu metody GET i certyfikatu
+    try {
+        # Wczytaj certyfikat
+        $cert = Get-PfxCertificate -FilePath $CertPath
+
+        # Ustaw protokół TLS na 1.2 lub inny odpowiedni
+        [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
+        # Wywołaj usługę REST z użyciem certyfikatu
         $response = Invoke-RestMethod -Uri $Url -Method Get -Certificate $cert
-        
-        # Wyświetlanie odpowiedzi
+
+        # Wyświetl odpowiedź
         Write-Output "Odpowiedź z serwera: $($response | ConvertTo-Json)"
     }
     catch {
@@ -25,5 +28,30 @@ function Get-DataFromUrl {
     }
 }
 
-# Wywołanie funkcji z przekazanymi parametrami
+# Wywołaj funkcję z przekazanymi parametrami
 Get-DataFromUrl -Url $Url -CertPath $CertPath
+
+
+
+
+
+
+pem
+
+
+function Get-CertificateFromPem {
+    param(
+        [string]$PemPath
+    )
+
+    $certContent = Get-Content -Path $PemPath -Raw
+    $certContent = $certContent -replace '-{5}(BEGIN|END) CERTIFICATE-{5}', ''
+    $certContent = [System.Convert]::FromBase64String($certContent)
+    $cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2 -ArgumentList @($certContent)
+
+    return $cert
+}
+
+
+
+
