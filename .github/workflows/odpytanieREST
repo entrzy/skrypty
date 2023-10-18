@@ -1,28 +1,36 @@
 param(
-    [string]$Url,
-    [string]$CertPath,
-    [string]$CertPassword
+    [string]$Url
 )
+
+# Zawartość plików .pem
+$certContent = @"
+-----BEGIN CERTIFICATE-----
+(Tu wstaw zawartość certyfikatu z pliku .pem)
+-----END CERTIFICATE-----
+"@
+
+$keyContent = @"
+-----BEGIN PRIVATE KEY-----
+(Tu wstaw zawartość klucza z pliku .pem)
+-----END PRIVATE KEY-----
+"@
+
+# Tworzenie obiektu certyfikatu z zawartości .pem
+$tempCertFile = [System.IO.Path]::GetTempFileName()
+[System.IO.File]::WriteAllText($tempCertFile, $certContent + $keyContent)
+$cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2
+$cert.Import($tempCertFile)
+Remove-Item -Path $tempCertFile -Force
 
 function Get-DataFromUrl {
     param(
         [string]$Url,
-        [string]$CertPath,
-        [string]$CertPassword
+        [System.Security.Cryptography.X509Certificates.X509Certificate2]$Cert
     )
     
     try {
-        # Wczytanie certyfikatu z pliku
-        $cert = Get-PfxCertificate -FilePath $CertPath
-
-        # Utworzenie obiektu SecureString dla hasła certyfikatu
-        $securePassword = ConvertTo-SecureString -String $CertPassword -AsPlainText -Force
-        
-        # Importowanie certyfikatu do magazynu 'CurrentUser' na komputerze lokalnym
-        Import-PfxCertificate -FilePath $CertPath -CertStoreLocation Cert:\CurrentUser\My -Password $securePassword | Out-Null
-        
-        # Wywołanie usługi REST przy użyciu metody GET z uwzględnieniem certyfikatu
-        $response = Invoke-RestMethod -Uri $Url -Method Get -Certificate $cert
+        # Wywołanie usługi REST przy użyciu metody GET i certyfikatu
+        $response = Invoke-RestMethod -Uri $Url -Method Get -Certificate $Cert
         
         # Wyświetlanie odpowiedzi
         Write-Output "Odpowiedź z serwera: $($response | ConvertTo-Json)"
@@ -33,44 +41,5 @@ function Get-DataFromUrl {
     }
 }
 
-# Wywołanie funkcji z przekazanymi parametrami
-Get-DataFromUrl -Url $Url -CertPath $CertPath -CertPassword $CertPassword
-
-
-
-
-
-=====================================================================================
-
-
-    [string]$Url,
-    [string]$CertPath
-)
-
-function Get-DataFromUrl {
-    param(
-        [string]$Url,
-        [string]$CertPath
-    )
-    
-    try {
-        # Wczytanie certyfikatu z pliku
-        $cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2 -ArgumentList $CertPath
-
-        # Ustawienie protokołu TLS na 1.2
-        [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-
-        # Wywołanie usługi REST przy użyciu metody GET
-        $response = Invoke-RestMethod -Uri $Url -Method Get -Certificate $cert
-        
-        # Wyświetlanie odpowiedzi
-        Write-Output "Odpowiedź z serwera: $($response | ConvertTo-Json)"
-    }
-    catch {
-        # Obsługa błędów i wyświetlanie wiadomości o błędzie
-        Write-Error "Błąd: $_"
-    }
-}
-
-# Wywołanie funkcji z przekazanymi parametrami
-Get-DataFromUrl -Url $Url -CertPath $CertPath
+# Wywołanie funkcji z przekazanym parametrem i certyfikatem
+Get-DataFromUrl -Url $Url -Cert $cert
