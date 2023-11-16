@@ -1,12 +1,2 @@
-/copy:DAT: Ta opcja określa, jakie atrybuty plików będą kopiowane. DAT oznacza, że będą kopiowane następujące atrybuty:
-
-D - Dane pliku (czyli zawartość pliku).
-A - Atrybuty pliku (np. czy plik jest ukryty, tylko do odczytu itp.).
-T - Znaczniki czasu pliku (czyli daty utworzenia, ostatniego dostępu i ostatniej modyfikacji).
-/xc: Wyklucza zmienione pliki. To znaczy, że jeśli plik w źródle i w miejscu docelowym istnieje, ale został zmieniony, to nie zostanie skopiowany.
-
-/xn: Wyklucza nowsze pliki. Jeśli plik w miejscu docelowym jest nowszy niż plik w lokalizacji źródłowej, to nie zostanie on skopiowany.
-
-/xo: Wyklucza starsze pliki. Jeśli plik w miejscu docelowym jest starszy niż plik w lokalizacji źródłowej, to nie zostanie on skopiowany.
-
-/e: Kopiuje wszystkie podkatalogi, włącznie z pustymi. To oznacza, że struktura katalogów zostanie zachowana w pełni, nawet jeśli niektóre foldery są puste.
+Get-ChildItem -Path $ścieżkaDoKatalogu -Recurse -File | Where-Object { $_.DirectoryName -notmatch "\\$wykluczonyFolder\\" } | Select-String -Pattern $szukanyTekst | ForEach-Object {
+    Write-Host "Znaleziono tekst w pliku: $($_.Path)"
