@@ -1,2 +1,16 @@
-Get-ChildItem -Path $ścieżkaDoKatalogu -Recurse -File | Where-Object { $_.DirectoryName -notmatch "\\$wykluczonyFolder\\" } | Select-String -Pattern $szukanyTekst | ForEach-Object {
-    Write-Host "Znaleziono tekst w pliku: $($_.Path)"
+# Pobierz bieżącą datę i godzinę
+$currentDateTime = Get-Date
+
+# Ustaw godziny początkowe i końcowe
+$startTime = [TimeSpan]::Parse("22:00")
+$endTime = [TimeSpan]::Parse("07:00")
+
+# Pobierz tylko godzinę z bieżącej daty i czasu
+$currentTime = $currentDateTime.TimeOfDay
+
+# Sprawdź, czy bieżący czas znajduje się w przedziale czasowym
+if ($currentTime -ge $startTime -or $currentTime -lt $endTime) {
+    Write-Host "TAK"
+} else {
+    Write-Host "NIE"
+}
