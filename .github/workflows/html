@@ -1,0 +1,17 @@
+<p><strong>BBVA PERU</strong></p>
+<p><strong>Error Report</strong></p>
+<table>
+    <tbody>
+        <tr>
+            <td><strong>Date/Time </strong></td>
+            <td><strong>Running Environment: PROD</strong></td>
+            <td><strong>Batch Name</strong></td>
+        </tr>
+        <tr>
+            <td><strong>$date</strong></td>
+            <td><strong>$reason</strong></td>
+            <td><strong>$batchname</strong></td>
+        </tr>
+    </tbody>
+</table>
+<p><strong><span style="color: red">Please contact with support team</span></strong><strong></strong></p>

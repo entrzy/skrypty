@@ -1,3 +1,0 @@
-@echo off
-echo Restartowanie komputera...
-shutdown /r /t 0 /f /d p:0:0 /c "Przymusowy restart"
