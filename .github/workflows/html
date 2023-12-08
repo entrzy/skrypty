@@ -1,17 +1,31 @@
-<p><strong>BBVA PERU</strong></p>
-<p><strong>Error Report</strong></p>
+<p style="text-align: left;"><strong><span style="font-size: 28px;">BBVA PERU</span></strong></p>
+<p style="text-align: left;"><strong>Error Report</strong></p>
 <table>
     <tbody>
         <tr>
-            <td><strong>Date/Time </strong></td>
-            <td><strong>Running Environment: PROD</strong></td>
-            <td><strong>Batch Name</strong></td>
+            <td>
+                <div style="text-align: left;"><strong>Date/Time&nbsp;</strong></div>
+            </td>
+            <td style="width: 27.9841%;">
+                <div style="text-align: left;"><strong>Running Environment: PROD</strong></div>
+            </td>
+            <td style="width: 27.9841%; text-align: left;"></td>
+            <td>
+                <div style="text-align: left;"><strong>Batch Name</strong></div>
+            </td>
         </tr>
         <tr>
-            <td><strong>$date</strong></td>
-            <td><strong>$reason</strong></td>
-            <td><strong>$batchname</strong></td>
+            <td>
+                <div style="text-align: left;"><strong>$date</strong></div>
+            </td>
+            <td colspan="2">
+                <div style="text-align: left;"><strong>$reason</strong></div>
+            </td>
+            <td>
+                <div style="text-align: left;"><strong>$batchname</strong></div>
+            </td>
         </tr>
     </tbody>
 </table>
-<p><strong><span style="color: red">Please contact with support team</span></strong><strong></strong></p>
+<p style="text-align: left;"><strong><span style="color: red;">Please ******* with support team</span></strong></p>
+
