@@ -1,0 +1,34 @@
+Here's a basic PowerShell script example:
+
+powershell
+Copy code
+# PowerShell Script to Automate SSH Login
+
+# Define SSH parameters
+$sshHost = "your_ssh_host" # Replace with your SSH host
+$sshUser = "your_username" # Replace with your SSH username
+$sshPass = "your_password" # Replace with your SSH password
+$sshPort = 22 # Replace with your SSH port if different from the default
+
+# Convert password to SecureString
+$securePass = ConvertTo-SecureString $sshPass -AsPlainText -Force
+
+# Create a PSCredential object
+$credential = New-Object System.Management.Automation.PSCredential($sshUser, $securePass)
+
+# Start the SSH process
+$sshProcess = Start-Process ssh -ArgumentList "$sshUser@$sshHost -p $sshPort" -Credential $credential -WindowStyle Hidden -PassThru
+
+# Wait for the process to exit
+$sshProcess.WaitForExit()
+To run this script:
+
+Open PowerShell.
+Navigate to the directory where your script is saved.
+Run the script by typing .\scriptname.ps1, replacing scriptname.ps1 with the name of your script file.
+Important Security Notes:
+
+Storing passwords in plain text, as in this script, is not secure. Anyone with access to this script can see the password.
+Consider using SSH keys for a more secure, password-less login.
+Ensure that you understand the security implications of automating logins in this manner, especially in a production environment.
+This script is a basic example and might need modifications based on your specific requirements and environment.
