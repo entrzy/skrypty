@@ -1,23 +1,30 @@
-Based on the provided information, here is the revised and detailed list of tasks related to points 1-5, translated into English:
 
-1. Checking User Permissions:
-   - Ensure that you have root permissions or the appropriate sudo rights on all servers.
-   - Additionally, verify that the technical user has access to the database and possesses the necessary permissions to manage and manipulate data.
+Uzasadnienie Techniczne:
 
-2. Verifying System Requirements:
-   - Check if the servers meet the hardware and software requirements for each component of the application (WEB, APP, DB).
-   - Ensure that you have sufficient resources (CPU, RAM, disk space) on each server.
+W obliczu rosnących wymagań wydajnościowych naszej aplikacji AML, stwierdzono konieczność rozbudowy infrastruktury serwerowej. Obecna konfiguracja nie jest w stanie sprostać zwiększonemu obciążeniu wynikającemu z podwojenia liczby systemów integrujących się z naszym rozwiązaniem w ciągu ostatnich dwóch lat. Analiza wydajności wykazała, że przeciążenie serwerów prowadzi do znacznego wydłużenia czasu odpowiedzi aplikacji, co bezpośrednio wpływa na efektywność operacji związanych z przeciwdziałaniem praniu pieniędzy.
 
-3. Updating System and Software:
-   - Update the operating system and all packages on the servers to the latest versions.
+Konkretnie, zidentyfikowano potrzebę dodania 2x vCPU do każdego z dwóch serwerów obsługujących ruch sieciowy. Obecne serwery działają na granicy swoich możliwości, co skutkuje opóźnieniami i potencjalnymi przestojami. Dodatkowo, serwer IBM WebSphere, który jest rdzeniem przetwarzania danych aplikacji AML, wymaga rozbudowy o 2x vCPU. Podobna potrzeba dotyczy serwera IBM SPSS Modeler Server, który odpowiada za zaawansowaną analizę danych. W obu przypadkach, rozbudowa wiąże się z dodatkowymi kosztami licencyjnymi.
 
-4. Network Configuration and Traffic Monitoring:
-   - Check if port 8888 is unblocked between the WEB and APP servers to enable communication between these components.
-   - Ensure that the database port is unblocked between the WEB and DB servers, as well as between APP and DB, which is crucial for communication with the database.
-   - Verify that traffic from end-user computers to the WEB server on ports 8080 and 8090 is unblocked. If a load balancer is present, ensure that traffic on these ports is also correctly routed through the load balancer.
+Definition of Done:
 
-5. Checking Database Availability and Configuration:
-   - Ensure that the database server is accessible and functioning properly.
-   - Check if the DB configuration aligns with the application's requirements, including version, parameters, and access permissions.
+Dodanie vCPU do Serwerów Sieciowych: Zakończenie procesu instalacji dodatkowych 2x vCPU na każdym z dwóch serwerów sieciowych, potwierdzone testami wydajności.
 
-Executing these steps will help ensure that all components of the application can interact properly, and the installation will proceed smoothly.
+Rozbudowa IBM WebSphere: Skuteczne dodanie 2x vCPU do serwera IBM WebSphere, z potwierdzeniem poprawy wydajności przetwarzania.
+
+Upgrade IBM SPSS Modeler Server: Zainstalowanie 2x vCPU na serwerze IBM SPSS Modeler Server, z weryfikacją poprawy wydajności analitycznej.
+
+Testy Wydajnościowe: Przeprowadzenie i dokumentacja testów wydajnościowych po rozbudowie, potwierdzających osiągnięcie założonych celów wydajnościowych.
+
+Monitorowanie Post-Implementacyjne: Ustalenie procesu ciągłego monitorowania wydajności systemu po rozbudowie, z możliwością szybkiej interwencji i optymalizacji.
+
+Opis Korzyści:
+
+Zwiększona Przepustowość: Dodatkowe vCPU pozwolą na obsługę większej liczby równoczesnych zapytań, redukując czas odpowiedzi.
+
+Stabilność Systemu: Rozbudowa zasobów serwerowych zmniejszy ryzyko przeciążeń i awarii, zwiększając niezawodność systemu.
+
+Lepsza Skalowalność: Ulepszona infrastruktura pozwoli na elastyczne dostosowanie do przyszłego wzrostu zapotrzebowania.
+
+Optymalizacja Kosztów Długoterminowych: Inwestycja w rozbudowę serwerów przyczyni się do zwiększenia efektywności operacyjnej, co może obniżyć koszty eksploatacyjne w dłuższej perspektywie.
+
+Zgodność z Regulacjami: Szybsze przetwarzanie i analiza danych ułatwią przestrzeganie przepisów AML, podnosząc poziom bezpieczeństwa i zgodności.
