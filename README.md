@@ -1,28 +1,25 @@
+To import a .cer certificate into Tomcat 9 server on a Linux system, you need to convert the certificate into a format that Tomcat can use, which means converting it into a Java keystore file (JKS or PKCS12). Here are the steps you should follow:
 
-Aby zaimportować certyfikat z rozszerzeniem .cer do serwera Tomcat 9 na systemie Linux, musisz przekonwertować ten certyfikat do formatu używanego przez Tomcat, czyli do pliku keystore Java (JKS lub PKCS12). Oto kroki, które należy wykonać:
+1. Install the keytool utility
+Ensure you have the keytool utility installed, which is part of the Java Development Kit (JDK). You can check this by typing in the terminal:
 
-1. Instalacja narzędzia keytool
-Upewnij się, że masz zainstalowane narzędzie keytool, które jest częścią Java Development Kit (JDK). Możesz to sprawdzić, wpisując w terminalu:
 
-bash
-Copy code
 keytool -help
-Jeśli narzędzie nie jest zainstalowane, zainstaluj JDK zgodnie z dystrybucją Linuxa, którą posiadasz.
 
-2. Konwersja pliku .cer do keystore
-Najpierw, jeśli masz tylko publiczny certyfikat (plik .cer), musisz mieć także klucz prywatny, z którym certyfikat ten został wydany. Zakładając, że masz klucz prywatny oraz certyfikat, możesz utworzyć plik keystore w formacie PKCS12, który jest obecnie preferowany przez Tomcat:
+2. Convert the .cer file to a keystore
+First, if you only have the public certificate (.cer file), you must also have the private key with which this certificate was issued. Assuming you have both the private key and the certificate, you can create a PKCS12 keystore file, which is now preferred by Tomcat:
 
 bash
 Copy code
 openssl pkcs12 -export -in mycert.cer -inkey mykey.key -out keystore.p12 -name alias_name
-W powyższym poleceniu:
+In the command above:
 
-mycert.cer to twój certyfikat.
-mykey.key to twój klucz prywatny.
-keystore.p12 to nazwa pliku keystore, który zostanie utworzony.
-alias_name to alias, pod którym klucz prywatny i certyfikat będą przechowywane w keystore.
-3. Konfiguracja Tomcata do używania nowego keystore
-Edytuj plik konfiguracyjny Tomcata server.xml, który znajdziesz w katalogu conf w katalogu instalacyjnym Tomcata. Znajdź definicję konektora dla HTTPS, która wygląda mniej więcej tak:
+mycert.cer is your certificate.
+mykey.key is your private key.
+keystore.p12 is the name of the keystore file to be created.
+alias_name is the alias under which the private key and certificate will be stored in the keystore.
+3. Configure Tomcat to use the new keystore
+Edit the Tomcat configuration file server.xml, found in the conf directory of the Tomcat installation directory. Find the connector definition for HTTPS, which looks something like this:
 
 xml
 Copy code
@@ -35,21 +32,20 @@ Copy code
            keystoreFile="/path/to/keystore.p12"
            keystorePass="password"
            keystoreType="PKCS12" />
-W powyższym przykładzie:
+In the example above:
 
-keystoreFile wskazuje ścieżkę do pliku keystore.
-keystorePass to hasło do keystore, które ustawiłeś podczas eksportu do PKCS12.
-keystoreType ustawione na PKCS12.
-4. Restart Tomcata
-Po dokonaniu zmian w konfiguracji, zrestartuj serwer Tomcat, aby zmiany weszły w życie:
+keystoreFile indicates the path to the keystore file.
+keystorePass is the password for the keystore, which you set during the export to PKCS12.
+keystoreType is set to PKCS12.
+4. Restart Tomcat
+After making changes to the configuration, restart the Tomcat server for the changes to take effect:
 
 bash
 Copy code
 sudo systemctl restart tomcat9
-lub
+or
 
 bash
 Copy code
 /path/to/tomcat/bin/shutdown.sh
 /path/to/tomcat/bin/startup.sh
-Te kroki powinny pozwolić na skuteczne zaimportowanie i wykorzystanie certyfikatu .cer w Twoim serwerze Tomcat.
