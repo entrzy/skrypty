@@ -1,9 +1,5 @@
-<Connector port="8443" protocol="HTTP/1.1"
-           connectionTimeout="20000"
-           redirectPort="8443"
-           scheme="https"
-           secure="true"
-           SSLEnabled="true"
-           keystoreFile="/path/to/keystore.p12"
-           keystorePass="password"
-           keystoreType="PKCS12" />
+<Connector port="8443" protocol="org.apache.coyote.http11.Http11NioProtocol"
+           maxThreads="150" scheme="https" secure="true" SSLEnabled="true"
+           keystoreFile="/path/to/keystore.p12" keystorePass="1234"
+           keystoreType="PKCS12" clientAuth="false" sslProtocol="TLS" />
+
