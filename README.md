@@ -11,20 +11,21 @@
 
 # Funkcja do wyszukiwania i zamiany plików
 search_and_replace() {
-    local search_term=$1
-    local replace_term=$2
+    local search_path=$1
+    local search_term=$2
+    local replace_term=$3
     
     # Wyszukaj pliki zawierające określony ciąg znaków
-    files=$(grep -l -r "$search_term" .)
+    files=$(grep -l -r "$search_term" "$search_path")
 
     # Jeśli nie znaleziono plików, wyświetl komunikat
     if [ -z "$files" ]; then
-        echo "Nie znaleziono plików zawierających \"$search_term\"."
+        echo "Nie znaleziono plików zawierających \"$search_term\" w ścieżce \"$search_path\"."
         return
     fi
 
     # Wyświetl znalezione pliki
-    echo "Znalezione pliki zawierające \"$search_term\":"
+    echo "Znalezione pliki zawierające \"$search_term\" w ścieżce \"$search_path\":"
     echo "$files"
 
     # Potwierdzenie od użytkownika
@@ -43,9 +44,16 @@ search_and_replace() {
     echo "Zakończono zamianę."
 }
 
-# Pobierz od użytkownika ciągi znaków do wyszukania i zamiany
-read -p "Wprowadź ciąg znaków do wyszukania: " search_term
-read -p "Wprowadź ciąg znaków do zastąpienia: " replace_term
+# Sprawdź, czy podano poprawną liczbę argumentów
+if [ "$#" -ne 3 ]; then
+    echo "Sposób użycia: $0 ścieżka_do_katalogu_ciąg_znaków_do_wyszukania ciąg_znaków_do_zamiany"
+    exit 1
+fi
+
+# Pobierz od użytkownika ścieżkę, ciągi znaków do wyszukania i zamiany
+search_path=$1
+search_term=$2
+replace_term=$3
 
 # Wywołaj funkcję wyszukiwania i zamiany
-search_and_replace "$search_term" "$replace_term"
+search_and_replace "$search_path" "$search_term" "$replace_term"
