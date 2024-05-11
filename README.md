@@ -1,3 +1,51 @@
 ./ssoadm create-site -u amAdmin -f /path/to/passwordfile.txt -e /site-id -s http://site-url:port -t primary
 ./ssoadm add-site-members -u amAdmin -f /path/to/passwordfile.txt -e /site-id -m server01,server02
 ./ssoadm list-sites -u amAdmin -f /path/to/passwordfile.txt
+
+
+
+
+
+
+#!/bin/bash
+
+# Funkcja do wyszukiwania i zamiany plików
+search_and_replace() {
+    local search_term=$1
+    local replace_term=$2
+    
+    # Wyszukaj pliki zawierające określony ciąg znaków
+    files=$(grep -l -r "$search_term" .)
+
+    # Jeśli nie znaleziono plików, wyświetl komunikat
+    if [ -z "$files" ]; then
+        echo "Nie znaleziono plików zawierających \"$search_term\"."
+        return
+    fi
+
+    # Wyświetl znalezione pliki
+    echo "Znalezione pliki zawierające \"$search_term\":"
+    echo "$files"
+
+    # Potwierdzenie od użytkownika
+    read -p "Czy chcesz zamienić \"$search_term\" na \"$replace_term\" w tych plikach? (t/n): " confirm
+    if [ "$confirm" != "t" ]; then
+        echo "Operacja anulowana."
+        return
+    fi
+
+    # Zamień ciąg znaków w plikach
+    for file in $files; do
+        sed -i "s/$search_term/$replace_term/g" "$file"
+        echo "Zamieniono \"$search_term\" na \"$replace_term\" w pliku $file."
+    done
+
+    echo "Zakończono zamianę."
+}
+
+# Pobierz od użytkownika ciągi znaków do wyszukania i zamiany
+read -p "Wprowadź ciąg znaków do wyszukania: " search_term
+read -p "Wprowadź ciąg znaków do zastąpienia: " replace_term
+
+# Wywołaj funkcję wyszukiwania i zamiany
+search_and_replace "$search_term" "$replace_term"
