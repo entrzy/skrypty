@@ -1,0 +1,32 @@
+-- Połączenie do bazy danych
+USE NazwaBazyDanych;
+
+-- Import danych z pliku CSV do Tabela1
+BULK INSERT Tabela1
+FROM 'ścieżka/do/plik1.csv'
+WITH
+(
+    FIELDTERMINATOR = ';',
+    ROWTERMINATOR = '\n',
+    FIRSTROW = 2 -- Pominięcie pierwszego wiersza (opisu)
+);
+
+-- Import danych z pliku CSV do Tabela2
+BULK INSERT Tabela2
+FROM 'ścieżka/do/plik2.csv'
+WITH
+(
+    FIELDTERMINATOR = ';',
+    ROWTERMINATOR = '\n',
+    FIRSTROW = 2 -- Pominięcie pierwszego wiersza (opisu)
+);
+
+-- Import danych z pliku CSV do Tabela3
+BULK INSERT Tabela3
+FROM 'ścieżka/do/plik3.csv'
+WITH
+(
+    FIELDTERMINATOR = ';',
+    ROWTERMINATOR = '\n',
+    FIRSTROW = 2 -- Pominięcie pierwszego wiersza (opisu)
+);
