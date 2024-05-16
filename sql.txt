@@ -1,32 +1,44 @@
 -- Połączenie do bazy danych
 USE NazwaBazyDanych;
 
--- Import danych z pliku CSV do Tabela1
-BULK INSERT Tabela1
-FROM 'ścieżka/do/plik1.csv'
-WITH
-(
-    FIELDTERMINATOR = ';',
-    ROWTERMINATOR = '\n',
-    FIRSTROW = 2 -- Pominięcie pierwszego wiersza (opisu)
-);
+-- Rozpoczęcie transakcji
+BEGIN TRANSACTION;
 
--- Import danych z pliku CSV do Tabela2
-BULK INSERT Tabela2
-FROM 'ścieżka/do/plik2.csv'
-WITH
-(
-    FIELDTERMINATOR = ';',
-    ROWTERMINATOR = '\n',
-    FIRSTROW = 2 -- Pominięcie pierwszego wiersza (opisu)
-);
+BEGIN TRY
+    -- Import danych z pliku CSV do Tabela1, pomijając kolumnę ID
+    BULK INSERT Tabela1 (Kolumna1, Kolumna2, ...)
+    FROM 'ścieżka/do/plik1.csv'
+    WITH
+    (
+        FIELDTERMINATOR = ';',
+        ROWTERMINATOR = '\n',
+        FIRSTROW = 2 -- Pominięcie pierwszego wiersza (opisu)
+    );
 
--- Import danych z pliku CSV do Tabela3
-BULK INSERT Tabela3
-FROM 'ścieżka/do/plik3.csv'
-WITH
-(
-    FIELDTERMINATOR = ';',
-    ROWTERMINATOR = '\n',
-    FIRSTROW = 2 -- Pominięcie pierwszego wiersza (opisu)
-);
+    -- Analogicznie dla Tabela2 i Tabela3
+    BULK INSERT Tabela2 (Kolumna1, Kolumna2, ...)
+    FROM 'ścieżka/do/plik2.csv'
+    WITH
+    (
+        FIELDTERMINATOR = ';',
+        ROWTERMINATOR = '\n',
+        FIRSTROW = 2
+    );
+
+    BULK INSERT Tabela3 (Kolumna1, Kolumna2, ...)
+    FROM 'ścieżka/do/plik3.csv'
+    WITH
+    (
+        FIELDTERMINATOR = ';',
+        ROWTERMINATOR = '\n',
+        FIRSTROW = 2
+    );
+
+    -- Jeśli wszystko poszło dobrze, zatwierdzamy transakcję
+    COMMIT TRANSACTION;
+END TRY
+BEGIN CATCH
+    -- W przypadku błędu, cofamy transakcję
+    PRINT 'Wystąpił błąd: ' + ERROR_MESSAGE();
+    ROLLBACK TRANSACTION;
+END CATCH;
