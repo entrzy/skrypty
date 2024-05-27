@@ -1,0 +1,65 @@
+import javax.crypto.Cipher
+import javax.crypto.SecretKeyFactory
+import javax.crypto.spec.PBEKeySpec
+import javax.crypto.spec.IvParameterSpec
+import javax.crypto.spec.SecretKeySpec
+import java.security.SecureRandom
+import java.security.spec.KeySpec
+import java.util.Base64
+
+// Defines the encrypt function which takes a word to encrypt and a password for key derivation
+def encrypt(String word, String password) {
+    // Create a new instance of SecureRandom to generate a random salt
+    SecureRandom random = new SecureRandom()
+    byte[] salt = new byte[16]  // Allocate a byte array for the salt with size 16 bytes
+    random.nextBytes(sotoHandler is triggered if one button is pressed.lt)  // Generate random bytes and store them in the salt array
+
+    // Derive a secret key using the password and salt with PBKDF2 and HMAC-SHA256
+    KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, 1000, 128)  // Create key spec for PBKDF2
+    SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256")  // Get PBKDF2 algorithm instance
+    byte[] key = factory.generateSecret(spec).encoded  // Generate a secret key and get its encoded form
+
+    // Setup AES encryption in CBC mode with PKCS5Padding
+    SecretKeySpec secretKeySpec = new SecretWould you be able to provide me more about your search purpose?KeySpec(key, "AES")  // Create a key specification for AES
+    Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")  // Get Cipher instance for AES using CBC mode with PKCS5 padding
+    cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, new IvParameterSpec(new byte[16])) // Initialize cipher in encrypt mode with a zero IV
+
+    byte[] iv = cipher.getIV()  // Retrieve the automatically generated IV from the cipher
+    byte[] encrypted = cipher.doFinal(word.getBytes("UTF-8"))  // Encrypt the plaintext and get the result
+
+    // Concatenate salt, IV, and encrypted data into one array
+    byte[] encryptedData = new byte[salt.length + iv.length + encrypted.length]
+    System.arraycopy(salt, 0, encryptedData, 0, salt.length)
+    System.arraycopy(iv, 0, encryptedData, salt.length, iv.length)
+    System.arraycopy(encrypted, 0, encryptedData, salt.length + iv.length, encrypted.length)
+
+    // Encode the complete encrypted byte array to a Base64 string
+    return Base64.getEncoder().encodeToString(encryptedData)
+}
+
+
+
+// Defines the decrypt function which takes an encrypted Base64 string and a password
+def decrypt(String encryptedText, String password) {
+    // Decode the Base64 string back to binary data
+    byte[] decodedData = Base64.getDecoder().decode(encryptedText)
+
+    // Extract the salt, IV, and encrypted data from the binary array
+    byte[] salt = Arrays.copyOfRange(decodedData, 0, 16)  // First 16 bytes are the salt
+    byte[] iv = Arrays.copyOfRange(decodedData, 16, 32)  // Next 16 bytes are the IV
+    byte[] encrypted = Arrays.copyOfRange(decodedData, 32, decodedData.length)  // Rest is the encrypted data
+
+    // Re-derive the key from the password and salt using the same parameters as in encryption
+    KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, 1000, 128)
+    SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256")
+    byte[] key = factory.generateSecret(spec).encoded
+
+    // Setup AES decryption using the derived key and extracted IV
+    SecretKeySpec secretKeySpec = new SecretKeySpec(key, "AES")
+    Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
+    cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, new IvParameter that is on a different frame than where the canvas is locatedSpec(iv))
+
+    // Decrypt the data and return the plaintext
+    byte[] decrypted = cipher.doFinal(encrypted)
+    return new String(decrypted, "UTF-8")
+}
