@@ -1,5 +1,24 @@
-<Connector port="8443" protocol="org.apache.coyote.http11.Http11NioProtocol"
-           maxThreads="150" scheme="https" secure="true" SSLEnabled="true"
-           keystoreFile="/path/to/keystore.p12" keystorePass="1234"
-           keystoreType="PKCS12" clientAuth="false" sslProtocol="TLS" />
+# Podaj ścieżkę do pliku .pem
+$certPath = "ścieżka/do/certyfikatu.pem"
 
+# Wczytaj zawartość pliku
+$certContent = Get-Content -Path $certPath -Raw
+
+# Usuń nagłówki i stopki PEM
+$certContent = $certContent -replace "-----BEGIN CERTIFICATE-----", "" `
+                                 -replace "-----END CERTIFICATE-----", ""
+
+# Konwertuj zawartość na bajty
+$certBytes = [Convert]::FromBase64String($certContent)
+
+# Utwórz obiekt X509Certificate2
+$cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2 -ArgumentList $certBytes
+
+# Wyświetl informacje o ważności
+$notBefore = $cert.NotBefore
+$notAfter = $cert.NotAfter
+$isExpired = $cert.NotAfter -lt (Get-Date)
+
+Write-Output "Certyfikat ważny od: $notBefore"
+Write-Output "Certyfikat ważny do: $notAfter"
+Write-Output "Czy certyfikat wygasł: $isExpired"
